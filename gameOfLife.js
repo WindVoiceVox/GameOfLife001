@@ -1,9 +1,34 @@
 const cellSize = 20;
-const gridWidth = 100;
-const gridHeight = 100;
+const gridWidth = 300;
+const gridHeight = 300;
 
 const grid = document.getElementById("grid");
-grid.style.width = `${gridWidth * cellSize}px`;
+// grid.style.width = `${gridWidth * cellSize}px`;
+grid.style.width = `${cellSize * gridWidth}px`;
+grid.style.height = `${cellSize * gridHeight}px`;
+
+function getRuleBySelector(sele) {
+    var i, j, sheets, rules, rule = null;
+
+    // stylesheetのリストを取得
+    sheets = document.styleSheets;
+    for (i = 0; i < sheets.length; i++) {
+        // そのstylesheetが持つCSSルールのリストを取得
+        rules = sheets[i].cssRules;
+        for (j = 0; j < rules.length; j++) {
+            // セレクタが一致するか調べる
+            if (sele === rules[j].selectorText) {
+                rule = rules[j];
+                break;
+            }
+        }
+    }
+    return rule;
+}
+
+var cellClass = getRuleBySelector(".cell");
+cellClass.style.width = `${(cellSize / (cellSize * gridWidth)) * 100}%`;
+cellClass.style.height = `${(cellSize / (cellSize * gridHeight)) * 100}%`;
 
 let cells = [];
 
@@ -15,6 +40,7 @@ for (let y = 0; y < gridHeight; y++) {
         cell.className = "cell";
         cell.id = `cell-${x}-${y}`;
         cell.addEventListener("click", () => toggleCell(x, y));
+
         grid.appendChild(cell);
         cells[y][x] = { element: cell, alive: false };
     }
@@ -65,7 +91,7 @@ function step() {
 
     cells = nextGen;
     render();
-    //    setTimeout(step, 1000);
+    setTimeout(step, 1000);
 }
 
 // Render the grid
