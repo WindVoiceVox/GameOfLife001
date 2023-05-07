@@ -5,25 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conway's Game of Life</title>
   <style>
-    #grid {
-      display: flex;
-      flex-wrap: wrap;
-      border: 0px solid black;
+    #gameCanvas {
+      border: 1px solid black;
     }
-    .cell {
-      display: block;
-      width: 1%;
-      height: 20px;
-      border: 1px solid #ddd;
-      box-sizing: border-box;
-    }
-    .alive {
-      background-color: black;
-    }
-  </style>  
+  </style>
 </head>
 <body>
-  <div id="grid" tabindex="0"></div>
+  <canvas id="gameCanvas" width="10000" height="6600"></canvas>
   <script src="gameOfLife.js"></script>
 </body>
 </html>

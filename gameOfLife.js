@@ -1,55 +1,24 @@
-const cellSize = 20;
-const gridWidth = 300;
-const gridHeight = 300;
+const cellSize = 22;
+const gridWidth = 400;
+const gridHeight = 400;
 
-const grid = document.getElementById("grid");
-// grid.style.width = `${gridWidth * cellSize}px`;
-grid.style.width = `${cellSize * gridWidth}px`;
-grid.style.height = `${cellSize * gridHeight}px`;
-
-function getRuleBySelector(sele) {
-    var i, j, sheets, rules, rule = null;
-
-    // stylesheetのリストを取得
-    sheets = document.styleSheets;
-    for (i = 0; i < sheets.length; i++) {
-        // そのstylesheetが持つCSSルールのリストを取得
-        rules = sheets[i].cssRules;
-        for (j = 0; j < rules.length; j++) {
-            // セレクタが一致するか調べる
-            if (sele === rules[j].selectorText) {
-                rule = rules[j];
-                break;
-            }
-        }
-    }
-    return rule;
-}
-
-var cellClass = getRuleBySelector(".cell");
-cellClass.style.width = `${(cellSize / (cellSize * gridWidth)) * 100}%`;
-cellClass.style.height = `${(cellSize / (cellSize * gridHeight)) * 100}%`;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
 let cells = [];
 
-// Create initial grid
+// Initialize the grid
 for (let y = 0; y < gridHeight; y++) {
     cells[y] = [];
     for (let x = 0; x < gridWidth; x++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.id = `cell-${x}-${y}`;
-        cell.addEventListener("click", () => toggleCell(x, y));
-
-        grid.appendChild(cell);
-        cells[y][x] = { element: cell, alive: false };
+        cells[y][x] = { alive: false };
     }
 }
 
 // Toggle cell state
 function toggleCell(x, y) {
     cells[y][x].alive = !cells[y][x].alive;
-    cells[y][x].element.classList.toggle("alive");
+    render();
 }
 
 // Count the number of alive neighbors
@@ -91,44 +60,46 @@ function step() {
 
     cells = nextGen;
     render();
-    setTimeout(step, 1000);
 }
 
 // Render the grid
 function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     for (let y = 0; y < gridHeight; y++) {
         for (let x = 0; x < gridWidth; x++) {
             if (cells[y][x].alive) {
-                cells[y][x].element.classList.add("alive");
-            } else {
-                cells[y][x].element.classList.remove("alive");
+                ctx.fillStyle = "black";
+                ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
             }
         }
     }
 }
 
 // Randomize the grid
-function randomizeGrid() {
+function randomize() {
     for (let y = 0; y < gridHeight; y++) {
         for (let x = 0; x < gridWidth; x++) {
-            if (Math.random() > 0.5) {
-                toggleCell(x, y);
-            }
+            cells[y][x].alive = Math.random() > 0.5;
         }
     }
+    render();
 }
 
-// Start the game
-function startGame() {
-    randomizeGrid();
-    step();
-}
+// Add click event listener to the canvas
+canvas.addEventListener("click", (event) => {
+    const x = Math.floor(event.clientX / cellSize);
+    const y = Math.floor(event.clientY / cellSize);
+    toggleCell(x, y);
+});
 
-startGame();
-
+// Add keydown event listener to the document
 document.addEventListener("keydown", (event) => {
     if (event.code === "Space") {
         step();
         event.preventDefault(); // Avoid scrolling the page when space is pressed
     }
 });
+
+// Initialize the canvas with random cells
+randomize();
