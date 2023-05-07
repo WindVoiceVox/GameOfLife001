@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conway's Game of Life</title>
+  <style>
+    #grid {
+      display: flex;
+      flex-wrap: wrap;
+      border: 0px solid black;
+    }
+    .cell {
+      display: block;
+      width: 1%;
+      height: 20px;
+      border: 1px solid #ddd;
+      box-sizing: border-box;
+    }
+    .alive {
+      background-color: black;
+    }
+  </style>  
+</head>
+<body>
+  <div id="grid" tabindex="0"></div>
+  <script src="gameOfLife.js"></script>
+</body>
+</html>
